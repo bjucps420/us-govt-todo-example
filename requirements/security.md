@@ -79,7 +79,7 @@
 | ID | SEC-7 |
 | --- | --- |
 | Function | Limit Secret Users Listing |
-| Description | A secret user visits the application. |
+| Description | A Secret User visits the application. |
 | Inputs | None |
 | Source | Request of Secret User to View Todos |
 | Outputs | A list of Todos filtered to show only secret, classified or unclassified Todos |
@@ -92,7 +92,7 @@
 | ID | SEC-8 |
 | --- | --- |
 | Function | Limit Secret Users Viewing |
-| Description | A Secret user views a todo. |
+| Description | A Secret User views a todo. |
 | Inputs | Id of Todo |
 | Source | Request of Secret User to View a Todo |
 | Outputs | A Todo or Access Denied |
@@ -118,11 +118,11 @@
 | ID | SEC-10 |
 | --- | --- |
 | Function | Limit Top Secret Users Listing |
-| Description | A Top Secret user visits the application. |
+| Description | A Top Secret User visits the application. |
 | Inputs | None |
 | Source | Request of Top Secret User to View Todos |
 | Outputs | A list of Todos filtered to show only top secret, secret, classified or unclassified Todos |
-| Action | A Top Secret user visits the application.  The application issues a query to the backend for top secret, secret, classified, and unclassified todos.  The results of the query are displayed on the screen.  An add button is shown allowing the adding of new todos.  No edit or deletion functionality is shown. |
+| Action | A top secret user visits the application.  The application issues a query to the backend for top secret, secret, classified, and unclassified todos.  The results of the query are displayed on the screen.  An add button is shown allowing the adding of new todos.  No edit or deletion functionality is shown. |
 | Requires | A logged in Top Secret User |
 | Precondition | None |
 | Postcondition | None |
@@ -131,11 +131,11 @@
 | ID | SEC-11 |
 | --- | --- |
 | Function | Limit Top Top Secret Users Viewing |
-| Description | A Top Secret user views a todo. |
+| Description | A Top Secret User views a todo. |
 | Inputs | Id of Todo |
 | Source | Request of Top Secret User to View a Todo |
 | Outputs | A Todo or Access Denied |
-| Action | A secret user visits the application.  They request to view a Todo. The Todo is displayed only if the level is top secret, secret, classified, or unclassified. |
+| Action | A top secret user visits the application.  They request to view a Todo. The Todo is displayed only if the level is top secret, secret, classified, or unclassified. |
 | Requires | A logged in Top Secret User |
 | Precondition | None |
 | Postcondition | None |
@@ -157,7 +157,7 @@
 | ID | SEC-13 |
 | --- | --- |
 | Function | Limit Aid Users List |
-| Description | An Aid user visits the application. |
+| Description | An Aid User visits the application. |
 | Inputs | None |
 | Source | Request of Aid User |
 | Outputs | A list of Todos filtered to show only top secret, secret, classified or unclassified Todos |
@@ -170,7 +170,7 @@
 | ID | SEC-14 |
 | --- | --- |
 | Function | Limit Aid Users Viewing |
-| Description | A Aid user views a todo. |
+| Description | An Aid User views a todo. |
 | Inputs | Id of Todo |
 | Source | Request of Aid User to View a Todo |
 | Outputs | A Todo or Access Denied |
@@ -183,7 +183,7 @@
 | ID | SEC-15 |
 | --- | --- |
 | Function | Limit Aid Users Editing |
-| Description | A Aid user edits a todo. |
+| Description | An Aid User edits a todo. |
 | Inputs | Id of Todo |
 | Source | Request of Aid User to Edit a Todo |
 | Outputs | A Todo or Access Denied |
@@ -196,7 +196,7 @@
 | ID | SEC-16 |
 | --- | --- |
 | Function | Limit Aid Users Deleting |
-| Description | A Aid user edits a todo. |
+| Description | An Aid User edits a todo. |
 | Inputs | Id of Todo |
 | Source | Request of Aid User to Edit a Todo |
 | Outputs | A Todo or Access Denied |
