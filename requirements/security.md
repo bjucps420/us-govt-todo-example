@@ -252,7 +252,7 @@
 | Inputs | None |
 | Source | None |
 | Outputs | None |
-| Action | 6-digit OTP two factor authentication is required for all accounts. |
+| Action | 6-digit OTP two factor authentication must be enable-able for all accounts. |
 | Requires | None |
 | Precondition | None |
 | Postcondition | None |
