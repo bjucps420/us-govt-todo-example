@@ -73,3 +73,51 @@
 | Precondition | None |
 | Postcondition | None |
 | Side Effects | None |
+
+| ID | CODE-7 |
+| --- | --- |
+| Function | Provide a Login System |
+| Description | Need a Login Procedure |
+| Inputs | None |
+| Source | None |
+| Outputs | A user comes to the application and clicks the login button the upper right.  They enter their username and password.  If the information matches, the user is asked to enter a code from their OTP system (if OTP authentication is enabled). A logout button and an account button are shown.  If the code is correct, they are logged in.  If the username and password do not match or the OTP system code is incorrect, their login is rejected. |
+| Requires | None |
+| Precondition | None |
+| Postcondition | None |
+| Side Effects | None |
+
+| ID | CODE-8 |
+| --- | --- |
+| Function | Provide a Logout System |
+| Description | Need a Logout Procedure |
+| Inputs | None |
+| Source | None |
+| Outputs | The user clicks the logout button in the upper right corner.  Their session is invalidated. |
+| Requires | A Logged In User |
+| Precondition | None |
+| Postcondition | None |
+| Side Effects | None |
+
+| ID | CODE-9 |
+| --- | --- |
+| Function | Provide an Account Management System |
+| Description | Need to allow users to update their account |
+| Inputs | None |
+| Source | None |
+| Outputs | The user clicks the account button in the upper right corner.  They are taken to a page where they can turn on two factor authentication, change their username, and change their password. |
+| Requires | A Logged In User |
+| Precondition | None |
+| Postcondition | None |
+| Side Effects | None |
+
+| ID | CODE-10 |
+| --- | --- |
+| Function | Provide a Registration System |
+| Description | Need a Registration Procedure |
+| Inputs | None |
+| Source | None |
+| Outputs | A user comes to the application and clicks login, then register on the login page. This page collects the email and password for the new user.  The account is created after verifying all security requirements on the user.  If the account already exists, the creation is rejected.  Provided the account does not exist, the account is created with Unclassified status. |
+| Requires | None |
+| Precondition | None |
+| Postcondition | None |
+| Side Effects | None |
