@@ -248,11 +248,24 @@
 | ID | SEC-20 |
 | --- | --- |
 | Function | Two Factor Auth Requirements |
-| Description | All users must have 2-FA enabled. |
+| Description | All users must have the ability to enable 2-FA enabled. |
 | Inputs | None |
 | Source | None |
 | Outputs | None |
 | Action | 6-digit OTP two factor authentication is required for all accounts. |
+| Requires | None |
+| Precondition | None |
+| Postcondition | None |
+| Side Effects | None |
+
+| ID | SEC-21 |
+| --- | --- |
+| Function | Storage Requirements |
+| Description | Passwords and OTP Must Be Stored Securely |
+| Inputs | None |
+| Source | None |
+| Outputs | None |
+| Action | Fusion Auth must be the only place that passwords and OTP information is stored. |
 | Requires | None |
 | Precondition | None |
 | Postcondition | None |
