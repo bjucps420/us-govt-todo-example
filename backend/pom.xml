@@ -84,6 +84,11 @@
 			<artifactId>snakeyaml</artifactId>
 			<version>1.27</version>
 		</dependency>
+		<dependency>
+			<groupId>io.fusionauth</groupId>
+			<artifactId>fusionauth-java-client</artifactId>
+			<version>1.36.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
