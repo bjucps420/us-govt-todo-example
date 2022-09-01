@@ -3,7 +3,9 @@ package edu.bju.todos.controllers;
 import edu.bju.todos.config.SecurityConfig;
 import edu.bju.todos.dtos.EmailChangeDto;
 import edu.bju.todos.dtos.PasswordChangeDto;
+import edu.bju.todos.dtos.SecurityConfigUserDto;
 import edu.bju.todos.dtos.TwoFactorDto;
+import edu.bju.todos.dtos.UserWrapperDto;
 import edu.bju.todos.services.FusionAuthService;
 import edu.bju.todos.utils.ApiResponse;
 import io.fusionauth.domain.api.TwoFactorResponse;
@@ -22,6 +24,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final FusionAuthService fusionAuthService;
     private final SecurityConfig.Security security;
+
+    @GetMapping(path = "/current", produces = "application/json")
+    @PreAuthorize("permitAll()")
+    public UserWrapperDto current() {
+        if(security.getUser() != null) {
+            var user = fusionAuthService.findByFusionAuthUserId(security.getUser().getFusionAuthUserId());
+            if (user.isPresent()) {
+                return new UserWrapperDto(
+                    new SecurityConfigUserDto(
+                        security
+                    )
+                );
+            }
+        }
+        return null;
+    }
 
     @GetMapping(value = "/get-secret", consumes = "application/json", produces = "application/json")
     @PreAuthorize("isAuthenticated()")

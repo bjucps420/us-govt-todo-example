@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @AllArgsConstructor
     public static class User implements Authentication {
         private String name;
+        private String username;
         private String email;
         private String fusionAuthUserId;
         private Set<String> roles = new HashSet<>();

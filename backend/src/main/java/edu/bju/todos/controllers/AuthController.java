@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
@@ -78,7 +77,7 @@ public class AuthController {
             fusionAuthService.updatePassword(user, loginDto.getNewPassword(), false);
         }
 
-        var securityUser = new SecurityConfig.User(user.fullName, user.email, user.id.toString(), user.getRoleNamesForApplication(UUID.fromString(clientId)), true, user.twoFactorEnabled());
+        var securityUser = new SecurityConfig.User(user.fullName, user.username, user.email, user.id.toString(), user.getRoleNamesForApplication(UUID.fromString(clientId)), true, user.twoFactorEnabled());
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(securityUser);
         HttpSession session = req.getSession(true);
