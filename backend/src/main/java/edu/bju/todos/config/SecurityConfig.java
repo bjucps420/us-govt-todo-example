@@ -1,6 +1,8 @@
 package edu.bju.todos.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.bju.todos.enums.Role;
+import edu.bju.todos.enums.Type;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +22,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,9 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/api/auth/**", "/actuator/**", "/error").permitAll()
-                .and().cors().and().csrf().disable();
+            .authorizeRequests()
+            .antMatchers("/api/auth/**", "/actuator/**", "/error").permitAll()
+            .and().cors().and().csrf().disable();
     }
 
     @AllArgsConstructor
@@ -114,6 +118,46 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 log.error(e.getMessage(), e);
             }
             return null;
+        }
+
+        public boolean hasAid() {
+            if(getUser() == null) return false;
+            return getUser().getRoles().contains(Role.AID.getDescription());
+        }
+
+        public boolean hasClassified() {
+            if(getUser() == null) return false;
+            return getUser().getRoles().contains(Role.CLASSIFIED.getDescription());
+        }
+
+        public boolean hasSecret() {
+            if(getUser() == null) return false;
+            return getUser().getRoles().contains(Role.SECRET.getDescription());
+        }
+
+        public boolean hasTopSecret() {
+            if(getUser() == null) return false;
+            return getUser().getRoles().contains(Role.TOP_SECRET.getDescription());
+        }
+
+        public boolean hasUnclassified() {
+            if(getUser() == null) return false;
+            return getUser().getRoles().contains(Role.UNCLASSIFIED.getDescription());
+        }
+
+        public List<Type> getTypes() {
+            List<Type> types = new ArrayList<>();
+            if(hasAid() || hasTopSecret()) {
+                types.add(Type.TOP_SECRET);
+            }
+            if(hasAid() || hasSecret()) {
+                types.add(Type.SECRET);
+            }
+            if(hasAid() || hasClassified()) {
+                types.add(Type.CLASSIFIED);
+            }
+            types.add(Type.UNCLASSIFIED); // everyone gets these types
+            return types;
         }
     }
 

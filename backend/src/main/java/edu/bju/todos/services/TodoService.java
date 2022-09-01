@@ -17,22 +17,13 @@ import java.util.Optional;
 public class TodoService {
     private final TodoRepository todoRepository;
 
-    public Optional<Todo> findById(Long id) {
-        return todoRepository.findById(id);
-    }
-
     public Optional<Todo> findById(Long id, List<Type> types) {
         return todoRepository.findByIdAndTypeIn(id, types);
     }
 
-    public Iterable<Todo> findAll() {
-        return todoRepository.findAll();
+    public Page<Todo> findAllByTitleLike(String title, List<Type> types, List<Status> statues, Pageable pageable) {
+        return todoRepository.findAllByTitleLikeAndTypeInAndStatusIn(title, types, statues, pageable);
     }
-
-    public Page<Todo> findAll(Pageable pageable) {
-        return todoRepository.findAll(pageable);
-    }
-
     public Page<Todo> findAll(List<Type> types, List<Status> statues, Pageable pageable) {
         return todoRepository.findAllByTypeInAndStatusIn(types, statues, pageable);
     }
@@ -43,5 +34,10 @@ public class TodoService {
         }
         todoRepository.save(todo);
         return todo;
+    }
+
+    public boolean delete(Todo todo) {
+        todoRepository.delete(todo);
+        return true;
     }
 }

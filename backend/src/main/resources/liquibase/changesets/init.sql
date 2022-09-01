@@ -2,7 +2,7 @@
 
 -- changeset ethanmcgee:1
 -- validCheckSum: ANY
-CREATE TABLE user (
+CREATE TABLE "user" (
     id bigserial PRIMARY KEY,
     username varchar(255),
     fusion_auth_user_id varchar(255)
@@ -16,6 +16,6 @@ CREATE TABLE todo (
     description varchar(2048) not null,
     status varchar(50) not null default 'PENDING',
     type varchar(50) not null default 'UNCLASSIFIED',
-    created_by bigint references user,
-    updated_by bigint references user,
+    created_by bigint references "user",
+    updated_by bigint references "user"
 );

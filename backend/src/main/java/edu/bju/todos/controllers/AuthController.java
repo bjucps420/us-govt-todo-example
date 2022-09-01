@@ -3,6 +3,7 @@ package edu.bju.todos.controllers;
 import edu.bju.todos.config.SecurityConfig;
 import edu.bju.todos.dtos.LoginDto;
 import edu.bju.todos.services.FusionAuthService;
+import edu.bju.todos.utils.ApiResponse;
 import io.fusionauth.domain.User;
 import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class AuthController {
 
     @PostMapping(value = "/login")
     @PreAuthorize("permitAll()")
-    public LoginDto login(HttpServletRequest req, @RequestBody LoginDto loginDto) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    public ApiResponse<LoginDto> login(HttpServletRequest req, @RequestBody LoginDto loginDto) {
         var response = fusionAuthService.checkPassword(loginDto.getUsername(), loginDto.getPassword());
         User user = null;
         if(response != null && response.getSecond() != null) {
@@ -53,25 +54,25 @@ public class AuthController {
             user = fusionAuthService.updatePassword(loginDto.getForgotPasswordCode(), loginDto.getNewPassword());
             if (user == null) {
                 loginDto.setSuccess(false);
-                return loginDto;
+                return ApiResponse.success(loginDto);
             }
         } else if (response == null) {
             loginDto.setSuccess(false);
-            return loginDto;
+            return ApiResponse.success(loginDto);
         } else if (response.getFirst() == TWO_FACTOR_CODE_REQUIRED && StringUtils.isBlank(loginDto.getTwoFactorCode())) {
             loginDto.setSuccess(true);
             loginDto.setRequiresTwoFactorCode(true);
-            return loginDto;
+            return ApiResponse.success(loginDto);
         } else if (response.getFirst() == TWO_FACTOR_CODE_REQUIRED) {
             user = fusionAuthService.getUserByLogin(loginDto.getUsername());
             if(!fusionAuthService.completeTwoFactorLogin(response.getSecond().twoFactorId, loginDto.getTwoFactorCode())) {
                 loginDto.setSuccess(false);
-                return loginDto;
+                return ApiResponse.success(loginDto);
             }
         } else if (response.getFirst() == PASSWORD_CHANGE_REQUIRED && StringUtils.isBlank(loginDto.getNewPassword())) {
             loginDto.setSuccess(true);
             loginDto.setRequiresPasswordChange(true);
-            return loginDto;
+            return ApiResponse.success(loginDto);
         } else if (response.getFirst() == PASSWORD_CHANGE_REQUIRED) {
             user = fusionAuthService.getUserByLogin(loginDto.getUsername());
             fusionAuthService.updatePassword(user, loginDto.getNewPassword(), false);
@@ -85,7 +86,7 @@ public class AuthController {
 
         var resp = new LoginDto();
         resp.setSuccess(true);
-        return resp;
+        return ApiResponse.success(loginDto);
     }
 
     @GetMapping(value = "/logout")

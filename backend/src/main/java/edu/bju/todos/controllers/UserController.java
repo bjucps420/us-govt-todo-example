@@ -5,6 +5,7 @@ import edu.bju.todos.dtos.EmailChangeDto;
 import edu.bju.todos.dtos.PasswordChangeDto;
 import edu.bju.todos.dtos.TwoFactorDto;
 import edu.bju.todos.services.FusionAuthService;
+import edu.bju.todos.utils.ApiResponse;
 import io.fusionauth.domain.api.TwoFactorResponse;
 import io.fusionauth.domain.api.twoFactor.SecretResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,27 +25,29 @@ public class UserController {
 
     @GetMapping(value = "/get-secret", consumes = "application/json", produces = "application/json")
     @PreAuthorize("isAuthenticated()")
-    public SecretResponse getSecret() {
-        return fusionAuthService.generateSecret();
+    public ApiResponse<SecretResponse> getSecret() {
+        return ApiResponse.success(fusionAuthService.generateSecret());
     }
 
     @PostMapping(value = "/toggle-two-factor", consumes = "application/json", produces = "application/json")
     @PreAuthorize("isAuthenticated()")
-    public TwoFactorResponse toggleTwoFactor(@RequestBody TwoFactorDto twoFactorDto) {
-        return fusionAuthService.toggleTwoFactor(security.getUser().getFusionAuthUserId(), twoFactorDto);
+    public ApiResponse<TwoFactorResponse> toggleTwoFactor(@RequestBody TwoFactorDto twoFactorDto) {
+        return ApiResponse.success(fusionAuthService.toggleTwoFactor(security.getUser().getFusionAuthUserId(), twoFactorDto));
     }
 
     @PostMapping(value = "/change-email", consumes = "application/json", produces = "application/json")
     @PreAuthorize("isAuthenticated()")
-    public void changeEmail(@RequestBody EmailChangeDto emailChangeDto) {
+    public ApiResponse<Boolean> changeEmail(@RequestBody EmailChangeDto emailChangeDto) {
         fusionAuthService.updateEmail(security.getUser().getFusionAuthUserId(), emailChangeDto.getNewEmail());
+        return ApiResponse.success(true);
     }
 
     @PostMapping(value = "/change-password", consumes = "application/json", produces = "application/json")
     @PreAuthorize("isAuthenticated()")
-    public void changePassword(@RequestBody PasswordChangeDto passwordChangeDto) {
+    public ApiResponse<Boolean> changePassword(@RequestBody PasswordChangeDto passwordChangeDto) {
         if(fusionAuthService.checkPassword(security.getUser().getEmail(), passwordChangeDto.getCurrentPassword()).getFirst() < 300) {
             fusionAuthService.updatePassword(security.getUser().getFusionAuthUserId(), passwordChangeDto.getNewPassword(), false);
         }
+        return ApiResponse.success(true);
     }
 }

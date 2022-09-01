@@ -2,12 +2,14 @@ package edu.bju.todos.models;
 
 import edu.bju.todos.enums.Status;
 import edu.bju.todos.enums.Type;
+import edu.bju.todos.utils.BeanUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -49,4 +51,9 @@ public class Todo {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private User updatedBy;
+
+    public static Todo of(Long id) {
+        if (id == null) return null;
+        return BeanUtil.getBean(EntityManager.class).getReference(Todo.class, id);
+    }
 }
