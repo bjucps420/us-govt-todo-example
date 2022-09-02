@@ -107,8 +107,7 @@ public class AuthController {
         HttpSession session = req.getSession(true);
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
 
-        var resp = new LoginDto();
-        resp.setSuccess(true);
+        loginDto.setSuccess(true);
         return ApiResponse.success(loginDto);
     }
 

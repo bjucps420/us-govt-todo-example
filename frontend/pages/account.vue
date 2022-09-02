@@ -288,22 +288,26 @@ export default {
   methods: {
     async enableTwoFactorAuthentication() {
       const secret = await this.$userService.getSecret();
-      this.secret = secret.secret;
-      this.secretBase32 = secret.secretBase32Encoded;
-      this.enableDialog = true;
-      this.$nextTick(() => {
-        const canvas = document.getElementById('canvas');
-        QRCode.toCanvas(canvas, 'otpauth://totp/sichra?secret=' + this.secretBase32 + '&issuer=fusion-auth');
-      });
+      if(response.success) {
+        this.secret = secret.response.secret;
+        this.secretBase32 = secret.response.secretBase32Encoded;
+        this.enableDialog = true;
+        this.$nextTick(() => {
+          const canvas = document.getElementById('canvas');
+          QRCode.toCanvas(canvas, 'otpauth://totp/sichra?secret=' + this.secretBase32 + '&issuer=fusion-auth');
+        });
+      }
     },
     async completeEnableTwoFactorAuthentication() {
       if(this.$refs.enableForm.validate()) {
-        await this.$userService.toggleTwoFactor(true, this.secret, this.secretBase32, this.code);
-        const user = {...this.currentUser};
-        user.twoFactorEnabled =  true;
-        this.$store.commit('user/setUser', { user });
-        this.enableDialog = false;
-        this.code = '';
+        const response = await this.$userService.toggleTwoFactor(true, this.secret, this.secretBase32, this.code);
+        if(response.success && response.response) {
+          const user = {...this.currentUser};
+          user.twoFactorEnabled =  true;
+          this.$store.commit('user/setUser', { user });
+          this.enableDialog = false;
+          this.code = '';
+        }
       }
     },
     cancelEnableTwoFactorAuthentication() {
@@ -314,18 +318,20 @@ export default {
     },
     async completeDisableTwoFactorAuthentication() {
       if(this.$refs.disableForm.validate()) {
-        await this.$userService.toggleTwoFactor(false, null, null, this.code);
-        const user = {...this.currentUser};
-        user.twoFactorEnabled =  false;
-        this.$store.commit('user/setUser', { user });
-        this.disableDialog = false;
-        this.code = '';
+        var response = await this.$userService.toggleTwoFactor(false, null, null, this.code);
+        if(response.success && response.response) {
+          const user = {...this.currentUser};
+          user.twoFactorEnabled =  false;
+          this.$store.commit('user/setUser', { user });
+          this.disableDialog = false;
+          this.code = '';
+        }
       }
     },
     async updateEmail() {
       if(this.$refs.usernameForm.validate()) {
         const response = await this.$userService.changeEmail(this.email);
-        if(response) {
+        if(response.success && response.response) {
           this.$toast.success('Email updated.', {
             duration: 3000
           });
@@ -339,7 +345,7 @@ export default {
     async updatePassword() {
       if(this.$refs.passwordForm.validate()) {
         const response = await this.$userService.changePassword(this.currentPassword, this.newPassword);
-        if(response) {
+        if(response.success && response.response) {
           this.$toast.success('Password updated.', {
             duration: 3000
           });

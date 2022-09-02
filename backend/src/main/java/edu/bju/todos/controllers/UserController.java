@@ -57,6 +57,7 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     public ApiResponse<Boolean> changeEmail(@RequestBody EmailChangeDto emailChangeDto) {
         fusionAuthService.updateEmail(security.getUser().getFusionAuthUserId(), emailChangeDto.getNewEmail());
+        security.getUser().setEmail(emailChangeDto.getNewEmail());
         return ApiResponse.success(true);
     }
 
