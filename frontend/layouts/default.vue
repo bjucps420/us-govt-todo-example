@@ -1,9 +1,11 @@
 <template>
   <v-app dark>
     <v-app-bar fixed app elevate-on-scroll>
-      <img v-if="$vuetify.theme.dark" height="36" src="/logo-dark.png" alt="Logo" class="logo ml-3">
-      <img v-else height="36" src="/logo.png" alt="Logo" class="logo ml-3">
-      <span>Presidential Todos</span>
+      <v-btn text class="mr-2" color="secondary" @click="goHome">
+        <img v-if="$vuetify.theme.dark" height="36" src="/logo-dark.png" alt="Logo" class="logo ml-3">
+        <img v-else height="36" src="/logo.png" alt="Logo" class="logo ml-3">
+        <span>Presidential Todos</span>
+      </v-btn>
 
       <v-spacer />
 
@@ -59,6 +61,9 @@ export default {
     toggleTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
       localStorage.setItem("useDarkTheme", this.$vuetify.theme.dark.toString())
+    },
+    goHome() {
+      this.$router.push({path: "/"});
     },
     profile() {
       this.$router.push({path: "/account"});

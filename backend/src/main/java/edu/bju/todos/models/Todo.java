@@ -24,7 +24,7 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    public Long id;
+    private Long id;
 
     @Column(length = 255, nullable = false)
     private String title;
@@ -41,13 +41,13 @@ public class Todo {
     private Type type = Type.UNCLASSIFIED;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "created_by")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private User createdBy;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "updated_by")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private User updatedBy;

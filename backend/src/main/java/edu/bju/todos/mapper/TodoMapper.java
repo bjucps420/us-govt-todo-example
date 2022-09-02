@@ -7,7 +7,8 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(
-    componentModel = "spring"
+    componentModel = "spring",
+    uses = {UserMapper.class}
 )
 public interface TodoMapper {
     default Todo toTodo(Long id) {

@@ -42,7 +42,7 @@ public class TodoController {
         @RequestParam(value = "search", required = false, defaultValue = "") String search,
         @RequestParam(value = "groupBy", required = false, defaultValue = "") String groupByParam,
         @RequestParam(value = "groupDesc", required = false, defaultValue = "") String groupDescParam,
-        @RequestParam(value = "sortBy", required = false, defaultValue = "name") String sortByParam,
+        @RequestParam(value = "sortBy", required = false, defaultValue = "title") String sortByParam,
         @RequestParam(value = "sortDesc", required = false, defaultValue = "false") String sortDescParam,
         @RequestParam(value = "page", required = false, defaultValue = "1") String pageParam,
         @RequestParam(value = "mustSort", required = false, defaultValue = "false") String mustSortParam,
@@ -83,7 +83,7 @@ public class TodoController {
         return ApiResponse.success(new SearchResponse<>(dataPage.getTotalElements(), todoMapper.from(dataPage.toList())));
     }
 
-    @GetMapping(path = "/{id}", produces = "application/json")
+    @GetMapping(path = "/{id:\\d+}", produces = "application/json")
     @PreAuthorize("permitAll()")
     public ApiResponse<TodoDto> get(@PathVariable Long id) {
         var todo = todoService.findById(id, security.getTypes());

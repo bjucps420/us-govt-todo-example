@@ -11,4 +11,6 @@ public class TodoDto {
     private String description;
     private Status status;
     private Type type;
+    private UserDto createdBy;
+    private UserDto updatedBy;
 }

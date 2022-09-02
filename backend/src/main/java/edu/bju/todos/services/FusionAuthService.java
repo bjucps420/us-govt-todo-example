@@ -15,8 +15,6 @@ import io.fusionauth.domain.api.twoFactor.SecretResponse;
 import io.fusionauth.domain.api.twoFactor.TwoFactorLoginRequest;
 import io.fusionauth.domain.api.user.ForgotPasswordRequest;
 import io.fusionauth.domain.api.user.RegistrationRequest;
-import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
-import liquibase.repackaged.org.apache.commons.text.RandomStringGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
