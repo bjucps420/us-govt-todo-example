@@ -31,7 +31,7 @@ public class UserService {
     }
 
     public User save(User user) {
-        if (user.getId() == 0L) {
+        if (user.getId() == null || user.getId() == 0L) {
             user.setId(null);
         }
         userRepository.save(user);

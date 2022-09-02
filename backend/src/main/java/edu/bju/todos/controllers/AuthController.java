@@ -2,7 +2,9 @@ package edu.bju.todos.controllers;
 
 import edu.bju.todos.config.SecurityConfig;
 import edu.bju.todos.dtos.LoginDto;
+import edu.bju.todos.dtos.RegistrationDto;
 import edu.bju.todos.services.FusionAuthService;
+import edu.bju.todos.services.UserService;
 import edu.bju.todos.utils.ApiResponse;
 import io.fusionauth.domain.User;
 import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
@@ -28,6 +30,7 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 @RequestMapping("/api/auth/")
 public class AuthController {
     private final FusionAuthService fusionAuthService;
+    private final UserService userService;
 
     private final int PASSWORD_CHANGE_REQUIRED = 203;
     private final int TWO_FACTOR_CODE_REQUIRED = 242;
@@ -37,8 +40,29 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     @PreAuthorize("permitAll()")
-    public void register(HttpServletRequest req, @RequestBody LoginDto loginDto) {
+    public ApiResponse<User> register(HttpServletRequest req, @RequestBody RegistrationDto registrationDto) {
+        var user = fusionAuthService.findByEmail(registrationDto.getUsername());
+        if(user.isEmpty()) {
+            var createdUser = fusionAuthService.createUser(registrationDto.getUsername(), registrationDto.getName(), registrationDto.getPassword());
+            if(createdUser != null) {
+                var domainUser = new edu.bju.todos.models.User();
+                domainUser.setUsername(registrationDto.getUsername());
+                domainUser.setFusionAuthUserId(createdUser.id.toString());
+                userService.save(domainUser);
 
+                var securityUser = new SecurityConfig.User(createdUser.fullName, createdUser.username, createdUser.email, createdUser.id.toString(), createdUser.getRoleNamesForApplication(UUID.fromString(clientId)), true, createdUser.twoFactorEnabled());
+                SecurityContext sc = SecurityContextHolder.getContext();
+                sc.setAuthentication(securityUser);
+                HttpSession session = req.getSession(true);
+                session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+
+                return ApiResponse.success(createdUser);
+            } else {
+                return ApiResponse.error("User account could not be created.");
+            }
+        } else {
+            return ApiResponse.error("An account already exists for this email.  Please use forgot password to reset your password.");
+        }
     }
 
     @PostMapping(value = "/login")

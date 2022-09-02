@@ -19,6 +19,14 @@ export class AuthService {
     return null;
   }
 
+  async register(data) {
+    const response = await this.axios.post(`/api/auth/register`, data);
+    if(response.status === 200) {
+      return response.data;
+    }
+    return null;
+  }
+
   async logout() {
     const response = await this.axios.get(`/api/auth/logout`);
     if(response.status === 200) {

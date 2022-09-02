@@ -37,24 +37,14 @@ public class FusionAuthService {
     @Value("${link-url}")
     private String baseUrl;
 
-    private User createUser(String email, String username, String name, String initialPassword) {
+    public User createUser(String email, String name, String initialPassword) {
         RegistrationRequest registrationRequest = new RegistrationRequest();
         registrationRequest.user = new User();
         registrationRequest.user.id = UUID.randomUUID();
-        if(email != null && StringUtils.isNotBlank(email)) {
-            registrationRequest.user.email = email;
-            registrationRequest.sendSetPasswordEmail = true;
-            registrationRequest.skipVerification = false;
-            if(username != null && StringUtils.isNotBlank(username)) {
-                registrationRequest.user.username = username;
-            }
-        } else if(username != null && StringUtils.isNotBlank(username)) {
-            registrationRequest.user.username = username;
-            registrationRequest.user.password = initialPassword;
-            registrationRequest.sendSetPasswordEmail = false;
-            registrationRequest.skipVerification = true;
-            registrationRequest.user.passwordChangeRequired = true;
-        }
+        registrationRequest.user.email = email;
+        registrationRequest.user.password = initialPassword;
+        registrationRequest.sendSetPasswordEmail = false;
+        registrationRequest.skipVerification = true;
         registrationRequest.user.fullName = name;
         registrationRequest.registration = new UserRegistration();
         registrationRequest.registration.applicationId = UUID.fromString(clientId);
@@ -64,12 +54,6 @@ public class FusionAuthService {
             return result.successResponse.user;
         }
         return null;
-    }
-
-    private String generateRandomSpecialCharacters(int length) {
-        RandomStringGenerator pwdGenerator = new RandomStringGenerator.Builder().withinRange(33, 126)
-                .build();
-        return pwdGenerator.generate(length);
     }
 
     public Optional<User> findByEmail(String email) {

@@ -16,9 +16,9 @@
                   <v-row no-gutters>
                     <v-col cols="12">
                       <v-text-field
-                        v-model="username"
-                        :rules="usernameRules"
-                        label="Username"
+                        v-model="email"
+                        :rules="emailRules"
+                        label="Email"
                         required
                         prepend-icon="mdi-account"
                       ></v-text-field>
@@ -47,6 +47,15 @@
                         <v-spacer />
                         <v-btn
                           :block="$vuetify.breakpoint.smAndUp ? false : true"
+                          color="secondary"
+                          class="my-4 px-6 mr-3 rounded-pill"
+                          depressed
+                          @click="register"
+                        >
+                          Register
+                        </v-btn>
+                        <v-btn
+                          :block="$vuetify.breakpoint.smAndUp ? false : true"
                           color="primary"
                           class="my-4 px-6 rounded-pill"
                           depressed
@@ -66,15 +75,55 @@
             <v-form ref="forgotPasswordForm">
               <v-row>
                 <v-col cols="12">
-                  Please enter your username or email in order to receive an email with a link to reset your password.
+                  Please enter your email in order to receive an email with a link to reset your password.
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
                   <v-text-field
-                    v-model="username"
-                    :rules="usernameRules"
-                    label="Email or Username"
+                    v-model="email"
+                    :rules="emailRules"
+                    label="Email"
+                    required
+                    prepend-icon="mdi-at"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-btn
+                  color="secondary"
+                  class="my-4 rounded-pill"
+                  depressed
+                  @click="back"
+                >
+                  Back
+                </v-btn>
+                <v-spacer/>
+                <v-btn
+                  color="primary"
+                  class="my-4 rounded-pill"
+                  depressed
+                  @click="sendForgotPasswordEmail"
+                >
+                  Send Email
+                </v-btn>
+              </v-row>
+            </v-form>
+          </div>
+
+          <div v-if="page == FORGOT_PASSWORD">
+            <v-form ref="forgotPasswordForm">
+              <v-row>
+                <v-col cols="12">
+                  Please enter your email in order to receive an email with a link to reset your password.
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="email"
+                    :rules="emailRules"
+                    label="Email"
                     required
                     prepend-icon="mdi-at"
                   ></v-text-field>
@@ -178,6 +227,81 @@
               </v-row>
             </v-form>
           </div>
+
+          <div v-if="page == REGISTER">
+            <v-form ref="registrationForm">
+              <v-row>
+                <v-col cols="12">
+                  Please enter your email and choose a password for your account. Passwords must be at least 12 characters in length and contain at least 1 uppercase letter (i.e. ABC), at least 1 lowercase letter (i.e abc), and at least 1 number (i.e. 123).
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="name"
+                    :rules="nameRules"
+                    label="Name"
+                    required
+                    prepend-icon="mdi-account"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="email"
+                    :rules="emailRules"
+                    label="Email"
+                    required
+                    prepend-icon="mdi-at"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="newPassword"
+                    :rules="newPasswordRules"
+                    label="New Password"
+                    type="password"
+                    required
+                    prepend-icon="mdi-lock"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="confirmPassword"
+                    :rules="confirmPasswordRules"
+                    label="Confirm Password"
+                    type="password"
+                    required
+                    prepend-icon="mdi-lock"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-btn
+                  color="secondary"
+                  class="my-4 rounded-pill"
+                  depressed
+                  @click="back"
+                >
+                  Back
+                </v-btn>
+                <v-spacer/>
+                <v-btn
+                  color="primary"
+                  class="my-4 rounded-pill"
+                  depressed
+                  @click="completeRegistration"
+                >
+                  Register
+                </v-btn>
+              </v-row>
+            </v-form>
+          </div>
         </v-card-text>
       </v-card>
     </v-row>
@@ -195,7 +319,7 @@
         </v-toolbar>
 
         <div class="pa-5">
-          If there is an account associated with this username / email, you will receive an email with further instructions.  Contact support for additional assistance or if you do not receive an email.
+          If there is an account associated with this email, you will receive an email with further instructions.  Contact support for additional assistance or if you do not receive an email.
         </div>
       </v-card>
     </v-dialog>
@@ -218,6 +342,25 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="errorDialog" persistent max-width="400px">
+      <v-card class="rounded-lg">
+        <v-toolbar flat dense color="secondary">
+          <v-toolbar-title class="font-weight-light white--text">Error</v-toolbar-title>
+          <v-spacer />
+          <v-btn color="white" icon @click="closeErrorDialog">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <v-row class="pa-5">
+            <v-col cols="12">
+              {{ errorMessage }}
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -231,9 +374,14 @@ export default {
       PASSWORD_CHANGE: 2,
       FORGOT_PASSWORD_COMPLETE: 3,
       TWO_FACTOR_CODE: 4,
+      REGISTER: 5,
+
+      errorDialog: false,
+      errorMessage: true,
 
       page: 0,
-      username: null,
+      name: null,
+      email: null,
       password: null,
       newPassword: null,
       confirmPassword: null,
@@ -245,8 +393,12 @@ export default {
       showStartForgotPasswordDialog: false,
       showLoginFailedDialog: false,
 
-      usernameRules: [
-        v => !!v || 'Username is required',
+      nameRules: [
+        v => !!v || 'Name is required',
+      ],
+      emailRules: [
+        v => !!v || 'Email is required',
+        v => (v || '').match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) !== null || 'Email must be a valid email',
       ],
       passwordRules: [
         v => !!v || 'Password is required',
@@ -282,9 +434,37 @@ export default {
     forgotPassword() {
       this.page = this.FORGOT_PASSWORD;
     },
+    register() {
+      this.page = this.REGISTER;
+    },
+    async completeRegistration() {
+      if(this.$refs.registrationForm.validate()) {
+        const user = await this.$authService.register({
+          name: this.name,
+          username: this.email,
+          password: this.newPassword,
+        });
+        if(user.success) {
+          await this.$auth.loginWith('local', { data: {
+            username: this.email,
+            password: this.password,
+          }});
+          this.$store.commit('user/setUser', { user: this.$auth.user });
+          this.$nextTick(() => {
+            this.$router.push({path: "/"});
+          });
+        } else {
+          this.errorMessage = user.errorMessage;
+          this.errorDialog = true;
+        }
+      }
+    },
+    closeErrorDialog() {
+      this.errorDialog = false;
+    },
     async sendForgotPasswordEmail() {
       if(this.$refs.forgotPasswordForm.validate()) {
-        await this.$authService.startForgotPassword(this.username);
+        await this.$authService.startForgotPassword(this.email);
         this.showStartForgotPasswordDialog = true;
         this.page = this.LOGIN;
       }
@@ -294,7 +474,7 @@ export default {
         || (!this.twoFactorRequired || (this.$refs.twoFactorForm && this.$refs.twoFactorForm.validate()))
         || (!this.passwordChangeRequired || (this.$refs.completeChangePasswordForm && this.$refs.completeChangePasswordForm.validate()))) {
         let response = await this.$authService.login({
-          username: this.username,
+          username: this.email,
           password: this.password,
           newPassword: this.newPassword,
           twoFactorCode: this.twoFactorCode,
@@ -310,14 +490,16 @@ export default {
             this.passwordChangeRequired = true;
           } else {
             await this.$auth.loginWith('local', { data: {
-              username: this.username,
+              username: this.email,
               password: this.password,
               newPassword: this.newPassword,
               twoFactorCode: this.twoFactorCode,
               forgotPasswordCode: this.passwordChangeCode
             }});
             this.$store.commit('user/setUser', { user: this.$auth.user });
-            this.$router.push({path: "/"});
+            this.$nextTick(() => {
+              this.$router.push({path: "/"});
+            });
           }
         } else {
           this.showLoginFailedDialog = true;

@@ -29,7 +29,7 @@ public class TodoService {
     }
 
     public Todo save(Todo todo) {
-        if (todo.getId() == 0L) {
+        if (todo.getId() == null || todo.getId() == 0L) {
             todo.setId(null);
         }
         todoRepository.save(todo);
