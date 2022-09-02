@@ -5,6 +5,7 @@
         <v-col cols="12">
           <v-text-field
             v-model="todo.title"
+            :disabled="disabled"
             :rules="titleRules"
             label="Title"
             counter="255"
@@ -15,6 +16,7 @@
         <v-col cols="12">
           <v-textarea
             v-model="todo.description"
+            :disabled="disabled"
             :rules="descriptionRules"
             label="Description"
             counter="2048"
@@ -22,9 +24,10 @@
             prepend-icon="mdi-image-text"
           ></v-textarea>
         </v-col>
-        <v-col cols="12">
+        <v-col v-if="currentUser.roles.includes('Aid')" cols="12">
           <v-select
             v-model="todo.status"
+            :disabled="disabled"
             :rules="statusRules"
             :items="statuses"
             label="Status"
@@ -32,9 +35,10 @@
             prepend-icon="mdi-list-status"
           ></v-select>
         </v-col>
-        <v-col cols="12">
+        <v-col v-if="types.length > 1" cols="12">
           <v-select
             v-model="todo.type"
+            :disabled="disabled"
             :rules="typeRules"
             :items="types"
             label="Type"
@@ -54,6 +58,7 @@ export default {
   name: 'TodoForm',
   props: {
     request: { type: Object, default: () => {} },
+    disabled: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -102,18 +107,27 @@ export default {
     },
     async fetchEnums() {
       this.statuses = await this.$enumService.statuses();
-      this.types = await this.$enumService.types();
+      let fetchedTypes = await this.$enumService.types()
+      if(!(this.currentUser.roles.includes('Aid') || this.currentUser.roles.includes("Top Secret"))) {
+        fetchedTypes = fetchedTypes.filter(x => x !== "Top Secret");
+      }
+      if(!(this.currentUser.roles.includes('Aid') || this.currentUser.roles.includes("Secret") || this.currentUser.roles.includes("Top Secret"))) {
+        fetchedTypes = fetchedTypes.filter(x => x !== "Secret");
+      }
+      if(!(this.currentUser.roles.includes('Aid') || this.currentUser.roles.includes("Classified") || this.currentUser.roles.includes("Secret") || this.currentUser.roles.includes("Top Secret"))) {
+        fetchedTypes = fetchedTypes.filter(x => x !== "Classified");
+      }
+      this.types = fetchedTypes;
     },
     async submit() {
       if(this.$refs.form.validate()) {
         if(this.todo.id) {
-          await this.$todoService.update(this.todo);
+          return await this.$todoService.update(this.todo);
         } else {
-          await this.$todoService.create(this.todo);
+          return this.$todoService.create(this.todo);
         }
-        return true;
       }
-      return false;
+      return {success: false};
     },
   }
 }

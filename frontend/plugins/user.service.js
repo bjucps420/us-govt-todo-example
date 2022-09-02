@@ -3,6 +3,14 @@ export class UserService {
     this.axios = axios
   }
 
+  async getCurrent() {
+    const response = await this.axios.get('/api/user/current');
+    if(response.status === 200) {
+      return response.data;
+    }
+    return null;
+  }
+
   async getSecret() {
     const response = await this.axios.get('/api/user/get-secret');
     if(response.status === 200) {

@@ -91,7 +91,7 @@ public class TodoController {
     }
 
     @PostMapping(path = "/create", consumes = "application/json", produces = "application/json")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("!@security.hasAid()")
     public ApiResponse<TodoDto> create(@RequestBody TodoDto todoDto) {
         if(todoDto.getId() == null || todoDto.getId() == 0L) {
             var todo = todoMapper.to(todoDto);

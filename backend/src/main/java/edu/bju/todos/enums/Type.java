@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum Type {
     UNCLASSIFIED("Unclassified"),
     CLASSIFIED("Classified"),
-    SECRET("SECRET"),
+    SECRET("Secret"),
     TOP_SECRET("Top Secret");
 
     @Getter

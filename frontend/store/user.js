@@ -1,5 +1,5 @@
 export const state = () => ({
-  currentUser: null,
+  currentUser: {roles: []},
 });
 
 export const mutations = {

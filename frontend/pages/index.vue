@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center" align="center" class="my-lg-5">
+  <v-row v-if="!!currentUser.fusionAuthUserId" justify="center" align="center" class="my-lg-5">
     <v-col cols="12" lg="8">
       <v-card width="100%" :class="$vuetify.breakpoint.lgAndUp ? 'rounded-lg' : null" :tile="$vuetify.breakpoint.mdAndDown">
         <div class="secondary pa-6">
@@ -15,7 +15,7 @@
             <v-tab-item value="pending">
               <v-row align="end" class="pa-4">
                 <v-col cols="4">
-                  <v-btn color="secondary" depressed @click="createDialog = true">
+                  <v-btn v-if="!currentUser.roles.includes('Aid')" color="secondary" depressed @click="createItem">
                     <v-icon left dark>
                       mdi-plus
                     </v-icon>
@@ -45,10 +45,10 @@
                 @update:options="getPending"
               >
                 <template #[`item.actions`]="{ item }">
-                  <v-icon small class="mr-xl-2" @click="editItem(item)">
-                    mdi-pencil
+                  <v-icon class="mr-xl-2" @click="editItem(item)">
+                    mdi-eye
                   </v-icon>
-                  <v-icon small color="red darken-2" @click="deleteItem(item)">
+                  <v-icon v-if="currentUser.roles.includes('Aid')" color="red darken-2" @click="deleteItem(item)">
                     mdi-delete
                   </v-icon>
                 </template>
@@ -82,10 +82,10 @@
                 @update:options="getInProgress"
               >
                 <template #[`item.actions`]="{ item }">
-                  <v-icon small class="mr-xl-2" @click="editItem(item)">
-                    mdi-pencil
+                  <v-icon class="mr-xl-2" @click="editItem(item)">
+                    mdi-eye
                   </v-icon>
-                  <v-icon small color="red darken-2" @click="deleteItem(item)">
+                  <v-icon v-if="currentUser.roles.includes('Aid')" color="red darken-2" @click="deleteItem(item)">
                     mdi-delete
                   </v-icon>
                 </template>
@@ -119,10 +119,10 @@
                 @update:options="getComplete"
               >
                 <template #[`item.actions`]="{ item }">
-                  <v-icon small class="mr-xl-2" @click="editItem(item)">
-                    mdi-pencil
+                  <v-icon class="mr-xl-2" @click="editItem(item)">
+                    mdi-eye
                   </v-icon>
-                  <v-icon small color="red darken-2" @click="deleteItem(item)">
+                  <v-icon v-if="currentUser.roles.includes('Aid')" color="red darken-2" @click="deleteItem(item)">
                     mdi-delete
                   </v-icon>
                 </template>
@@ -170,7 +170,8 @@
     >
       <v-card class="rounded-lg">
         <v-toolbar flat color="secondary">
-          <v-toolbar-title class="font-weight-light white--text">Edit Todo</v-toolbar-title>
+          <v-toolbar-title v-if="editDialogViewing" class="font-weight-light white--text">View Todo</v-toolbar-title>
+          <v-toolbar-title v-else class="font-weight-light white--text">Edit Todo</v-toolbar-title>
           <v-spacer />
           <v-btn color="white" icon @click="editDialog = false">
             <v-icon>mdi-close</v-icon>
@@ -182,7 +183,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            v-if="editDialogViewing"
+            v-if="editDialogViewing && currentUser.roles.includes('Aid')"
             color="primary"
             class="my-4 mr-4"
             text
@@ -217,9 +218,9 @@
           </v-btn>
         </v-toolbar>
 
-        <v-card-text>
+        <div class="pa-5">
           This action cannot be undone.  Are you sure you wish to continue?
-        </v-card-text>
+        </div>
 
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -234,6 +235,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-overlay :value="loading">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      ></v-progress-circular>
+    </v-overlay>
   </v-row>
 </template>
 
@@ -248,6 +256,8 @@ export default {
   },
   data () {
     return {
+      loading: false,
+
       todo: {},
       createDialog: false,
       editDialog: false,
@@ -273,8 +283,8 @@ export default {
         { text: 'Title', value: 'title' },
         { text: 'Type', value: 'type' },
         { text: 'Status', value: 'status' },
-        { text: 'Created By', value: 'createdBy' },
-        { text: 'Updated By', value: 'updatedBy' },
+        { text: 'Created By', value: 'createdBy.username' },
+        { text: 'Updated By', value: 'updatedBy.username' },
         { text: 'Actions', value: 'actions' },
       ],
     }
@@ -290,6 +300,10 @@ export default {
     }
   },
   methods: {
+    createItem() {
+      this.todo = {};
+      this.createDialog = true;
+    },
     editItem(item) {
       this.todo = item;
       this.editDialogViewing = true;
@@ -299,14 +313,34 @@ export default {
       this.todo = item;
       this.deleteDialog = true;
     },
-    deleteTodo() {
+    async deleteTodo() {
+      this.loading = true;
+      this.deleteDialog = false;
+      await this.$todoService.delete(this.todo);
+      this.refetch();
+      this.loading = false;
     },
-    saveTodo() {
-      if(this.createDialog && this.$refs.createRequest.submit()) {
-        this.createDialog = false;
-      } else if(this.editDialog && this.$refs.editRequest.submit()) {
-        this.editDialog = false;
+    async saveTodo() {
+      this.loading = true;
+      if(this.createDialog) {
+        const response = await this.$refs.createRequest.submit();
+        if(response.success) {
+          this.createDialog = false;
+        } else if(response.errorMessage) {
+          this.errorMessage = response.errorMessage;
+          this.errorDialog = true;
+        }
+      } else if(this.editDialog) {
+        const response = await this.$refs.editRequest.submit();
+        if(response.success) {
+          this.editDialog = false;
+        } else if(response.errorMessage) {
+          this.errorMessage = response.errorMessage;
+          this.errorDialog = true;
+        }
       }
+      this.refetch();
+      this.loading = false;
     },
     refetch() {
       this.getDataFromApi();
@@ -314,12 +348,12 @@ export default {
     getDataFromApi() {
       this.getPending();
       this.getInProgress();
-      this.getDone();
+      this.getComplete();
     },
     getPending() {
       this.fetchPending().then((data) => {
-        this.pending = data.items;
-        this.totalPending = data.total;
+        this.pending = data.response.items;
+        this.totalPending = data.response.total;
         this.pendingLoading = false;
       });
     },
@@ -337,8 +371,8 @@ export default {
     },
     getInProgress() {
       this.fetchInProgress().then((data) => {
-        this.inProgress = data.items;
-        this.totalInProgress = data.total;
+        this.inProgress = data.response.items;
+        this.totalInProgress = data.response.total;
         this.inProgressLoading = false;
       });
     },
@@ -356,8 +390,8 @@ export default {
     },
     getComplete() {
       this.fetchComplete().then((data) => {
-        this.complete = data.items;
-        this.totalComplete = data.total;
+        this.complete = data.response.items;
+        this.totalComplete = data.response.total;
         this.completeLoading = false;
       });
     },

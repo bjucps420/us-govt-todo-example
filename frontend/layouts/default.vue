@@ -13,19 +13,19 @@
         <v-btn text class="mr-2" color="secondary" @click="toggleTheme">
           <v-icon small left>mdi-brightness-6</v-icon>Theme
         </v-btn>
-        <v-btn v-if="!!currentUser" text class="mr-2" color="secondary" @click="profile">
+        <v-btn v-if="!!currentUser.fusionAuthUserId" text class="mr-2" color="secondary" @click="profile">
           <v-icon small left color="primary">mdi-account-circle</v-icon>Account
         </v-btn>
-        <v-btn v-if="!!currentUser" text color="secondary" @click="logout">
+        <v-btn v-if="!!currentUser.fusionAuthUserId" text color="secondary" @click="logout">
           <v-icon small left color="primary">mdi-logout-variant</v-icon>Logout
         </v-btn>
-        <v-btn v-if="!!!currentUser" text color="secondary" @click="login">
+        <v-btn v-if="!!!currentUser.fusionAuthUserId" text color="secondary" @click="login">
           <v-icon small left color="primary">mdi-login-variant</v-icon>Login
         </v-btn>
       </v-toolbar-items>
     </v-app-bar>
 
-    <v-main :class="$auth.loggedIn ? 'main-bg' : null">
+    <v-main :class="!!currentUser ? 'main-bg' : null">
       <Nuxt />
     </v-main>
   </v-app>
@@ -46,6 +46,10 @@ export default {
     }),
   },
   mounted() {
+    const user = this.$userService.getCurrent();
+    if(user) {
+      this.$store.commit('user/setUser', { user });
+    }
     const theme = localStorage.getItem("useDarkTheme");
     if (theme) {
       if (theme === "true") {
