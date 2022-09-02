@@ -192,7 +192,7 @@
             Edit
           </v-btn>
           <v-btn
-            v-else
+            v-if="!editDialogViewing && currentUser.roles.includes('Aid')"
             color="primary"
             class="my-4 mr-4"
             text

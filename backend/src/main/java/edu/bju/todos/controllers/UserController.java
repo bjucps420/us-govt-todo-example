@@ -41,7 +41,7 @@ public class UserController {
         return null;
     }
 
-    @GetMapping(value = "/get-secret", consumes = "application/json", produces = "application/json")
+    @GetMapping(value = "/get-secret", produces = "application/json")
     @PreAuthorize("isAuthenticated()")
     public ApiResponse<SecretResponse> getSecret() {
         return ApiResponse.success(fusionAuthService.generateSecret());

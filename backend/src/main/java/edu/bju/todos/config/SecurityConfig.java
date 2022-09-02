@@ -151,10 +151,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             if(hasAid() || hasTopSecret()) {
                 types.add(Type.TOP_SECRET);
             }
-            if(hasAid() || hasSecret()) {
+            if(hasAid() || hasSecret() || hasTopSecret()) {
                 types.add(Type.SECRET);
             }
-            if(hasAid() || hasClassified()) {
+            if(hasAid() || hasClassified() || hasSecret() || hasTopSecret()) {
                 types.add(Type.CLASSIFIED);
             }
             types.add(Type.UNCLASSIFIED); // everyone gets these types

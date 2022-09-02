@@ -480,7 +480,8 @@ export default {
           twoFactorCode: this.twoFactorCode,
           forgotPasswordCode: this.passwordChangeCode
         });
-        if(response.success) {
+        debugger;
+        if(response.success && response.response.success) {
           response = response.response;
           if (response.requiresTwoFactorCode) {
             this.page = this.TWO_FACTOR_CODE;

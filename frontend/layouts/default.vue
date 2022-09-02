@@ -45,10 +45,10 @@ export default {
       currentUser: state => state.user.currentUser,
     }),
   },
-  mounted() {
-    const user = this.$userService.getCurrent();
+  async mounted() {
+    const user = await this.$userService.getCurrent();
     if(user) {
-      this.$store.commit('user/setUser', { user });
+      this.$store.commit('user/setUser', { user: user.user });
     }
     const theme = localStorage.getItem("useDarkTheme");
     if (theme) {
@@ -78,7 +78,7 @@ export default {
     async logout() {
       this.$auth.logout();
       await this.$authService.logout();
-      this.$store.commit('user/setUser', { user: null });
+      this.$store.commit('user/setUser', { user: {roles:[]} });
       this.$router.push({path: "/login"});
     },
   }

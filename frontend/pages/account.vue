@@ -30,6 +30,7 @@
             <v-form ref="emailForm">
               <v-text-field
                 v-model="email"
+                :rules="emailRules"
                 label="Email"
                 prepend-icon="mdi-at"
               ></v-text-field>
@@ -231,6 +232,7 @@ export default {
   name: 'AccountPage',
   data () {
     return {
+      email: '',
       code: '',
       enableDialog: false,
       disableDialog: false,
@@ -239,6 +241,10 @@ export default {
       confirmPassword: '',
       secret: '',
       secretBase32: '',
+      emailRules: [
+        v => !!v || 'Email is required',
+        v => (v || '').match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) !== null || 'Email must be a valid email',
+      ],
       codeRules: [
         v => !!v || 'Code is required',
       ],
@@ -268,18 +274,16 @@ export default {
       }
       return '';
     },
-    email() {
-      if(this.currentUser) {
-        return this.currentUser.email;
-      }
-      return '';
-    },
     twoFactorEnabled() {
       if(this.currentUser) {
         return this.currentUser.twoFactorEnabled;
       }
       return false;
     },
+  },
+  async mounted() {
+    const user = await this.$userService.getCurrent();
+    this.email = user.user.email;
   },
   methods: {
     async enableTwoFactorAuthentication() {
@@ -295,8 +299,10 @@ export default {
     async completeEnableTwoFactorAuthentication() {
       if(this.$refs.enableForm.validate()) {
         await this.$userService.toggleTwoFactor(true, this.secret, this.secretBase32, this.code);
+        const user = {...this.currentUser};
+        user.twoFactorEnabled =  true;
+        this.$store.commit('user/setUser', { user });
         this.enableDialog = false;
-        this.twoFactorEnabled = true;
         this.code = '';
       }
     },
@@ -309,8 +315,10 @@ export default {
     async completeDisableTwoFactorAuthentication() {
       if(this.$refs.disableForm.validate()) {
         await this.$userService.toggleTwoFactor(false, null, null, this.code);
+        const user = {...this.currentUser};
+        user.twoFactorEnabled =  false;
+        this.$store.commit('user/setUser', { user });
         this.disableDialog = false;
-        this.twoFactorEnabled = false;
         this.code = '';
       }
     },
