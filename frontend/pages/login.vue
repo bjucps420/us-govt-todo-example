@@ -316,6 +316,7 @@ export default {
               twoFactorCode: this.twoFactorCode,
               forgotPasswordCode: this.passwordChangeCode
             }});
+            this.$store.commit('user/setUser', { user: this.$auth.user });
             this.$router.push({path: "/"});
           }
         } else {

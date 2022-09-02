@@ -10,14 +10,14 @@
       <v-toolbar-items>
         <v-btn text class="mr-2" color="secondary" @click="toggleTheme">
           <v-icon small left>mdi-brightness-6</v-icon>Theme
-        </v-btn>  
-        <v-btn v-if="$auth.loggedIn" text class="mr-2" color="secondary" @click="profile">
+        </v-btn>
+        <v-btn v-if="!!currentUser" text class="mr-2" color="secondary" @click="profile">
           <v-icon small left color="primary">mdi-account-circle</v-icon>Account
         </v-btn>
-        <v-btn v-if="$auth.loggedIn" text color="secondary" @click="logout">
+        <v-btn v-if="!!currentUser" text color="secondary" @click="logout">
           <v-icon small left color="primary">mdi-logout-variant</v-icon>Logout
         </v-btn>
-        <v-btn v-if="!$auth.loggedIn" text color="secondary" @click="login">
+        <v-btn v-if="!!!currentUser" text color="secondary" @click="login">
           <v-icon small left color="primary">mdi-login-variant</v-icon>Login
         </v-btn>
       </v-toolbar-items>
@@ -30,11 +30,18 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'DefaultLayout',
   data() {
     return {
     }
+  },
+  computed: {
+    ...mapState({
+      currentUser: state => state.user.currentUser,
+    }),
   },
   mounted() {
     const theme = localStorage.getItem("useDarkTheme");
@@ -62,7 +69,7 @@ export default {
     async logout() {
       this.$auth.logout();
       await this.$authService.logout();
-      this.$forceUpdate();
+      this.$store.commit('user/setUser', { user: null });
       this.$router.push({path: "/login"});
     },
   }
