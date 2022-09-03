@@ -287,10 +287,10 @@ export default {
   },
   methods: {
     async enableTwoFactorAuthentication() {
-      const secret = await this.$userService.getSecret();
+      const response = await this.$userService.getSecret();
       if(response.success) {
-        this.secret = secret.response.secret;
-        this.secretBase32 = secret.response.secretBase32Encoded;
+        this.secret = response.response.secret;
+        this.secretBase32 = response.response.secretBase32Encoded;
         this.enableDialog = true;
         this.$nextTick(() => {
           const canvas = document.getElementById('canvas');
@@ -318,7 +318,7 @@ export default {
     },
     async completeDisableTwoFactorAuthentication() {
       if(this.$refs.disableForm.validate()) {
-        var response = await this.$userService.toggleTwoFactor(false, null, null, this.code);
+        const response = await this.$userService.toggleTwoFactor(false, null, null, this.code);
         if(response.success && response.response) {
           const user = {...this.currentUser};
           user.twoFactorEnabled =  false;
