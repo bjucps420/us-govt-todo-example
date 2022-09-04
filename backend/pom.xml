@@ -33,6 +33,8 @@
 		<maven-compiler.version>3.10.1</maven-compiler.version>
 		<h2database.version>2.1.212</h2database.version>
 		<powermock.version>2.0.9</powermock.version>
+		<sonar.organization>bjucps</sonar.organization>
+	  	<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
