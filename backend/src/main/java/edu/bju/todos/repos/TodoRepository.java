@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface TodoRepository extends PagingAndSortingRepository<Todo, Long> {
-    Page<Todo> findAllByTitleLikeAndTypeInAndStatusIn(String title, List<Type> types, List<Status> statues, Pageable pageable);
+    Page<Todo> findAllByTitleContainsAndTypeInAndStatusIn(String title, List<Type> types, List<Status> statues, Pageable pageable);
 
     Page<Todo> findAllByTypeInAndStatusIn(List<Type> types, List<Status> statues, Pageable pageable);
 

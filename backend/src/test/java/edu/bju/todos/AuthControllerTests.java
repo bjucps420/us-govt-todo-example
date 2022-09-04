@@ -1,6 +1,5 @@
 package edu.bju.todos;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inversoft.error.Errors;
 import com.inversoft.rest.ClientResponse;
@@ -9,14 +8,12 @@ import edu.bju.todos.dtos.LoginDto;
 import edu.bju.todos.dtos.RegistrationDto;
 import io.fusionauth.client.FusionAuthClient;
 import io.fusionauth.domain.User;
-import io.fusionauth.domain.api.LoginRequest;
 import io.fusionauth.domain.api.LoginResponse;
 import io.fusionauth.domain.api.UserResponse;
 import io.fusionauth.domain.api.user.ForgotPasswordResponse;
 import io.fusionauth.domain.api.user.RegistrationResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;

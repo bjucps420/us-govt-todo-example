@@ -22,7 +22,7 @@ public class TodoService {
     }
 
     public Page<Todo> findAllByTitleLike(String title, List<Type> types, List<Status> statues, Pageable pageable) {
-        return todoRepository.findAllByTitleLikeAndTypeInAndStatusIn(title, types, statues, pageable);
+        return todoRepository.findAllByTitleContainsAndTypeInAndStatusIn(title, types, statues, pageable);
     }
     public Page<Todo> findAll(List<Type> types, List<Status> statues, Pageable pageable) {
         return todoRepository.findAllByTypeInAndStatusIn(types, statues, pageable);
@@ -38,6 +38,11 @@ public class TodoService {
 
     public boolean delete(Todo todo) {
         todoRepository.delete(todo);
+        return true;
+    }
+
+    public boolean deleteAll() {
+        todoRepository.deleteAll();
         return true;
     }
 }
