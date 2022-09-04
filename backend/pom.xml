@@ -31,6 +31,8 @@
 		<jacoco.version>0.8.8</jacoco.version>
 		<surefire.version>2.22.0</surefire.version>
 		<maven-compiler.version>3.10.1</maven-compiler.version>
+		<h2database.version>2.1.212</h2database.version>
+		<powermock.version>2.0.9</powermock.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -143,6 +145,18 @@
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-redis</artifactId>
 			<version>${spring-session-data-redis.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2database.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-reflect</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

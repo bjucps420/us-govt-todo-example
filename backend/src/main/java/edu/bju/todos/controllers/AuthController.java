@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     @PreAuthorize("permitAll()")
-    public ApiResponse<User> register(HttpServletRequest req, @RequestBody RegistrationDto registrationDto) {
+    public ApiResponse<Boolean> register(HttpServletRequest req, @RequestBody RegistrationDto registrationDto) {
         var user = fusionAuthService.findByEmail(registrationDto.getUsername());
         if(user.isEmpty()) {
             var createdUser = fusionAuthService.createUser(registrationDto.getUsername(), registrationDto.getName(), registrationDto.getPassword());
@@ -51,7 +51,7 @@ public class AuthController {
                 HttpSession session = req.getSession(true);
                 session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
 
-                return ApiResponse.success(createdUser);
+                return ApiResponse.success(true);
             } else {
                 return ApiResponse.error("User account could not be created.");
             }
