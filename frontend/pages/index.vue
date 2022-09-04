@@ -283,8 +283,8 @@ export default {
         { text: 'Title', value: 'title' },
         { text: 'Type', value: 'type' },
         { text: 'Status', value: 'status' },
-        { text: 'Created By', value: 'createdBy.username' },
-        { text: 'Updated By', value: 'updatedBy.username' },
+        { text: 'Created By', value: 'createdBy' },
+        { text: 'Updated By', value: 'updatedBy' },
         { text: 'Actions', value: 'actions' },
       ],
     }

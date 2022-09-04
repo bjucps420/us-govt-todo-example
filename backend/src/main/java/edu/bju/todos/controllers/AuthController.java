@@ -4,7 +4,6 @@ import edu.bju.todos.config.SecurityConfig;
 import edu.bju.todos.dtos.LoginDto;
 import edu.bju.todos.dtos.RegistrationDto;
 import edu.bju.todos.services.FusionAuthService;
-import edu.bju.todos.services.UserService;
 import edu.bju.todos.utils.ApiResponse;
 import io.fusionauth.domain.User;
 import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
@@ -30,7 +29,6 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 @RequestMapping("/api/auth/")
 public class AuthController {
     private final FusionAuthService fusionAuthService;
-    private final UserService userService;
 
     private final int PASSWORD_CHANGE_REQUIRED = 203;
     private final int TWO_FACTOR_CODE_REQUIRED = 242;
@@ -45,11 +43,6 @@ public class AuthController {
         if(user.isEmpty()) {
             var createdUser = fusionAuthService.createUser(registrationDto.getUsername(), registrationDto.getName(), registrationDto.getPassword());
             if(createdUser != null) {
-                var domainUser = new edu.bju.todos.models.User();
-                domainUser.setUsername(registrationDto.getUsername());
-                domainUser.setFusionAuthUserId(createdUser.id.toString());
-                userService.save(domainUser);
-
                 var securityUser = new SecurityConfig.User(createdUser.fullName, createdUser.username, createdUser.email, createdUser.id.toString(), createdUser.getRoleNamesForApplication(UUID.fromString(clientId)), true, createdUser.twoFactorEnabled());
                 SecurityContext sc = SecurityContextHolder.getContext();
                 sc.setAuthentication(securityUser);

@@ -6,7 +6,6 @@ import edu.bju.todos.enums.Status;
 import edu.bju.todos.mapper.TodoMapper;
 import edu.bju.todos.models.Todo;
 import edu.bju.todos.services.TodoService;
-import edu.bju.todos.services.UserService;
 import edu.bju.todos.utils.ApiResponse;
 import edu.bju.todos.utils.SearchResponse;
 import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/todo/")
 public class TodoController {
     private final TodoService todoService;
-    private final UserService userService;
     private final TodoMapper todoMapper;
     private final SecurityConfig.Security security;
 
@@ -98,8 +96,7 @@ public class TodoController {
             List<String> validationErrors = validate(todo);
             if(validationErrors.isEmpty()) {
                 if (security.getUser() != null) {
-                    var user = userService.findByFusionAuthUserId(security.getUser().getFusionAuthUserId());
-                    user.ifPresent(todo::setCreatedBy);
+                    todo.setCreatedBy(security.getUser().getEmail());
                 }
                 return ApiResponse.success(todoMapper.from(todoService.save(todo)));
             }
@@ -124,8 +121,7 @@ public class TodoController {
         List<String> validationErrors = validate(todo);
         if(validationErrors.isEmpty()) {
             if (security.getUser() != null) {
-                var user = userService.findByFusionAuthUserId(security.getUser().getFusionAuthUserId());
-                user.ifPresent(todo::setUpdatedBy);
+                todo.setUpdatedBy(security.getUser().getEmail());
             }
             return ApiResponse.success(todoMapper.from(todoService.save(todo)));
         }
