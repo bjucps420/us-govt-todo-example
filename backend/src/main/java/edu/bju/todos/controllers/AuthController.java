@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.UUID;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
@@ -56,6 +58,13 @@ public class AuthController {
         } else {
             return ApiResponse.error("An account already exists for this email.  Please use forgot password to reset your password.");
         }
+    }
+
+    @GetMapping(value = "/forgot-password")
+    @PreAuthorize("permitAll()")
+    public ApiResponse<Boolean> startForgotPassword(@RequestParam("user") String user) throws IOException {
+        fusionAuthService.startForgotPassword(user);
+        return ApiResponse.success(true);
     }
 
     @PostMapping(value = "/login")
