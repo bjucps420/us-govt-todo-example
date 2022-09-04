@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         private String email;
         private String fusionAuthUserId;
         private Set<String> roles = new HashSet<>();
-        private boolean authenticated;
+        private boolean authenticated = true;
         private boolean twoFactorEnabled;
 
         @Override
