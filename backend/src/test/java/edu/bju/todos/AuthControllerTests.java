@@ -321,6 +321,7 @@ public class AuthControllerTests {
         // login
         ClientResponse<LoginResponse, Errors> authResponse = new ClientResponse<>();
         authResponse.status = 242;
+        authResponse.successResponse = new LoginResponse();
         Mockito.when(fusionAuthClient.login(Mockito.any())).thenReturn(authResponse);
 
         var om = new ObjectMapper();
@@ -404,6 +405,7 @@ public class AuthControllerTests {
         // login
         ClientResponse<LoginResponse, Errors> authResponse = new ClientResponse<>();
         authResponse.status = 203;
+        authResponse.successResponse = new LoginResponse();
         Mockito.when(fusionAuthClient.login(Mockito.any())).thenReturn(authResponse);
 
         var om = new ObjectMapper();
@@ -438,6 +440,7 @@ public class AuthControllerTests {
         // login
         ClientResponse<LoginResponse, Errors> authResponse = new ClientResponse<>();
         authResponse.status = 203;
+        authResponse.successResponse = new LoginResponse();
         ClientResponse<UserResponse, Errors> userResponse = new ClientResponse<>();
         userResponse.status = 200;
         userResponse.successResponse = new UserResponse();
