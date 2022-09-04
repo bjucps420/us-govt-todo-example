@@ -72,7 +72,7 @@ public class AuthController {
     public ApiResponse<LoginDto> login(HttpServletRequest req, @RequestBody LoginDto loginDto) {
         var response = fusionAuthService.checkPassword(loginDto.getUsername(), loginDto.getPassword());
         User user = null;
-        if(response != null && response.getSecond() != null) {
+        if(response.getSecond() != null) {
             user = response.getSecond().user;
         }
         if (StringUtils.isNotBlank(loginDto.getForgotPasswordCode())) {
@@ -81,7 +81,7 @@ public class AuthController {
                 loginDto.setSuccess(false);
                 return ApiResponse.success(loginDto);
             }
-        } else if (response == null) {
+        } else if (response.getSecond() == null) {
             loginDto.setSuccess(false);
             return ApiResponse.success(loginDto);
         } else if (response.getFirst() == TWO_FACTOR_CODE_REQUIRED && StringUtils.isBlank(loginDto.getTwoFactorCode())) {

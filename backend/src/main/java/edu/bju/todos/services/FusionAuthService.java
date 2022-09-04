@@ -101,7 +101,7 @@ public class FusionAuthService {
         if(result.wasSuccessful()) {
             return new Pair<>(result.status, result.successResponse);
         }
-        return null;
+        return new Pair<>(result.status, null);
     }
 
     public User getUserByLogin(String username) {
