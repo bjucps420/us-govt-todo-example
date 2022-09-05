@@ -46,6 +46,22 @@ export default {
     ['@nuxtjs/vuetify', { iconfont: 'mdi' }],
   ],
 
+  sentry: {
+    dsn: 'https://099728fbef844da5b84336c9157b7c21@sentry.bjucps.dev/2',
+    config: {
+      tracesSampleRate: 1.0,
+      vueOptions: {
+        tracing: true,
+        tracingOptions: {
+          hooks: [ 'mount', 'update' ],
+          timeout: 2000,
+          trackComponents: true
+        }
+      },
+      browserOptions: {},
+    },
+  },
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
@@ -53,6 +69,7 @@ export default {
     '@nuxtjs/auth-next',
     '@nuxtjs/toast',
     '@nuxtjs/proxy',
+    '@nuxtjs/sentry',
   ],
 
   proxy: [

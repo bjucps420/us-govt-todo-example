@@ -5,6 +5,7 @@ import edu.bju.todos.dtos.LoginDto;
 import edu.bju.todos.dtos.RegistrationDto;
 import edu.bju.todos.services.FusionAuthService;
 import edu.bju.todos.utils.ApiResponse;
+import edu.bju.todos.utils.NullableUtils;
 import io.fusionauth.domain.User;
 import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class AuthController {
         if(user.isEmpty()) {
             var createdUser = fusionAuthService.createUser(registrationDto.getUsername(), registrationDto.getName(), registrationDto.getPassword());
             if(createdUser != null) {
-                var securityUser = new SecurityConfig.User(createdUser.fullName, createdUser.username, createdUser.email, createdUser.id.toString(), createdUser.getRoleNamesForApplication(UUID.fromString(clientId)), true, createdUser.twoFactorEnabled());
+                var securityUser = new SecurityConfig.User(createdUser.fullName, createdUser.username, createdUser.email, createdUser.id.toString(), NullableUtils.nonNull(createdUser.getRoleNamesForApplication(UUID.fromString(clientId))), true, createdUser.twoFactorEnabled());
                 SecurityContext sc = SecurityContextHolder.getContext();
                 sc.setAuthentication(securityUser);
                 HttpSession session = req.getSession(true);
@@ -103,7 +104,7 @@ public class AuthController {
             fusionAuthService.updatePassword(user, loginDto.getNewPassword(), false);
         }
 
-        var securityUser = new SecurityConfig.User(user.fullName, user.username, user.email, user.id.toString(), user.getRoleNamesForApplication(UUID.fromString(clientId)), true, user.twoFactorEnabled());
+        var securityUser = new SecurityConfig.User(user.fullName, user.username, user.email, user.id.toString(), NullableUtils.nonNull(user.getRoleNamesForApplication(UUID.fromString(clientId))), true, user.twoFactorEnabled());
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(securityUser);
         HttpSession session = req.getSession(true);

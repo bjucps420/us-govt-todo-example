@@ -10,11 +10,11 @@ spec:
   template:
     metadata:
       labels:
-        app: hello
+        app: frontend
     spec:
       containers:
         - name: backend
-          image: registry.digitalocean.com/todos/frontend@sha256:3bf28e1b28858a03904ad6be91faae0049f8ae55499a458127f7e430af5bb847
+          image: registry.digitalocean.com/todos/frontend@sha256:912acb7f87680a100de3cc7c845695e4ed28a30e749c66739f92d3a7a494d4f5
           imagePullPolicy: Always
           envFrom:
           - configMapRef:

@@ -66,32 +66,3 @@ resource "digitalocean_database_connection_pool" "pool-01" {
 resource "digitalocean_domain" "default" {
   name = "presidentialtodos.com"
 }
-
-resource "digitalocean_certificate" "cert" {
-  name    = "le-todos"
-  type    = "lets_encrypt"
-  domains = ["presidentialtodos.com"]
-}
-
-resource "digitalocean_loadbalancer" "todos-lb" {
-  name                   = "todos-lb"
-  region                 = "nyc3"
-  redirect_http_to_https = true
-  enable_proxy_protocol  = true
-  droplet_tag            = "k8s"
-
-  forwarding_rule {
-    entry_port     = 443
-    entry_protocol = "https"
-
-    target_port     = 80
-    target_protocol = "http"
-
-    certificate_name = digitalocean_certificate.cert.name
-  }
-
-  healthcheck {
-    port     = 80
-    protocol = "tcp"
-  }
-}

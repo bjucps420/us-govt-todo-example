@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: registry.digitalocean.com/todos/backend@sha256:0a73b9c991f29cda41c8b68a2fc695ac97937cea8af9293b65672f814232a063
+        image: registry.digitalocean.com/todos/backend@sha256:550ea070063f7970d2e11bbfc20c35ab99d24176b6d272b081ceb19ef177193c
         imagePullPolicy: Always
         envFrom:
           - configMapRef:

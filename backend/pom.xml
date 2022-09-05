@@ -33,6 +33,7 @@
 		<maven-compiler.version>3.10.1</maven-compiler.version>
 		<h2database.version>2.1.212</h2database.version>
 		<powermock.version>2.0.9</powermock.version>
+		<sentry.version>6.3.1</sentry.version>
 		<sonar.organization>bjucps</sonar.organization>
 	  	<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
@@ -159,6 +160,11 @@
 			<artifactId>powermock-reflect</artifactId>
 			<version>${powermock.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.sentry</groupId>
+			<artifactId>sentry-spring-boot-starter</artifactId>
+			<version>${sentry.version}</version>
 		</dependency>
 	</dependencies>
 
