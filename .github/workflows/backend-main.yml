@@ -55,3 +55,12 @@ jobs:
       - run: mkdir -p backend/target/
       - run: mv todos-0.0.1-SNAPSHOT.jar backend/target/
       - run: cd backend && docker build -t backend .
+      - run: docker tag backend registry.digitalocean.com/todos/backend:$GITHUB_SHA
+      - run: docker tag backend registry.digitalocean.com/todos/backend:latest
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - run: doctl registry login
+      - run: docker push registry.digitalocean.com/todos/backend:$GITHUB_SHA
+      - run: docker push registry.digitalocean.com/todos/backend:latest

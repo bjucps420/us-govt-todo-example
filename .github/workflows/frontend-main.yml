@@ -56,3 +56,12 @@ jobs:
       - run: mv dist.zip frontend/
       - run: cd frontend && unzip dist.zip -d dist
       - run: cd frontend && docker build -t frontend .
+      - run: docker tag frontend registry.digitalocean.com/todos/frontend:$GITHUB_SHA
+      - run: docker tag frontend registry.digitalocean.com/todos/frontend:latest
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - run: doctl registry login
+      - run: docker push registry.digitalocean.com/todos/frontend:$GITHUB_SHA
+      - run: docker push registry.digitalocean.com/todos/frontend:latest
