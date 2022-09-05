@@ -23,6 +23,18 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Cache node modules
+        id: cache-node
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: frontend/.node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - run: cd frontend && npm install
       - run: cd frontend && npm run generate
       - uses: vimtor/action-zip@v1
@@ -43,5 +55,5 @@ jobs:
           name: dist
       - run: find .
       - run: mv dist.zip frontend/
-      - run: cd frontend && unzip dist.zip
+      - run: cd frontend && unzip dist.zip -d dist
       - run: cd front && docker build -t frontend .
