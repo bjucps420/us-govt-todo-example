@@ -56,4 +56,4 @@ jobs:
       - run: find .
       - run: mv dist.zip frontend/
       - run: cd frontend && unzip dist.zip -d dist
-      - run: cd front && docker build -t frontend .
+      - run: cd frontend && docker build -t frontend .
