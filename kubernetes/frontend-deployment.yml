@@ -13,8 +13,8 @@ spec:
         app: frontend
     spec:
       containers:
-        - name: backend
-          image: registry.digitalocean.com/todos/frontend@sha256:912acb7f87680a100de3cc7c845695e4ed28a30e749c66739f92d3a7a494d4f5
+        - name: frontend
+          image: registry.digitalocean.com/todos/frontend@sha256:cc51ef5fec7c791de8ce29f0c85e5c5fea2b4bd49ad0709ca518fc03f826c72a
           imagePullPolicy: Always
           envFrom:
           - configMapRef:
