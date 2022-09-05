@@ -25,6 +25,7 @@ jobs:
             ${{ runner.os }}-
       - run: cd frontend && npm install
       - run: cd frontend && npm run generate
+      - run: cd frontend && find .
       - run: cd frontend && zip –r dist.zip dist
       - uses: actions/upload-artifact@v2
         with:
