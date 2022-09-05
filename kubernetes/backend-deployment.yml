@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: registry.digitalocean.com/todos/backend@sha256:0a73b9c991f29cda41c8b68a2fc695ac97937cea8af9293b65672f814232a063
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: backend
+        ports:
+        - name: http
+          containerPort: 8080

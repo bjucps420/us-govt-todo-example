@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hello
+    spec:
+      containers:
+        - name: backend
+          image: registry.digitalocean.com/todos/frontend@sha256:3bf28e1b28858a03904ad6be91faae0049f8ae55499a458127f7e430af5bb847
+          imagePullPolicy: Always
+          envFrom:
+          - configMapRef:
+              name: frontend
+          ports:
+          - name: http
+            containerPort: 80
