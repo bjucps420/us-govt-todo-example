@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - datavolume:/var/lib/postgresql/data
+  redis:
+    image: redis:6.2.6
+  backend:
+    build:
+      context: backend/
+      dockerfile: Dockerfile
+    environment:
+      BASE_URL: http://localhost:8080
+      DB_HOST: db
+      DB_NAME: postgres
+      DB_PASS: password
+      DB_PORT: 5432
+      DB_USER: postgres
+      FUSION_AUTH_API_KEY: PMJillljxOpatyi1rfc9xj1AXZ8qhWTvrzDi3mfKqyhtAE3b-IWhtQ3U
+      FUSION_AUTH_APPLICATION_ID: 3b31aaf7-1de9-4907-9c7e-be5043a90c51
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - 8080:8080
+  frontend:
+    build:
+      context: frontend/
+      dockerfile: Dockerfile
+    environment:
+      SERVER: backend
+    depends_on:
+      - "backend"
+    ports:
+      - 80:80
+volumes:
+  datavolume:
