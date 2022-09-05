@@ -72,8 +72,7 @@ jobs:
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-        with:
-          args: set image deployments/backend backend=registry.digitalocean.com/todos/backend:$GITHUB_SHA
+      - run: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - run: sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      - run: doctl kubernetes cluster kubeconfig save todos
+      - run: kubectl set image deployments/backend backend=registry.digitalocean.com/todos/backend:$GITHUB_SHA
