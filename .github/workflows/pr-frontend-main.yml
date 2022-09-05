@@ -1,8 +1,5 @@
-name: Main Frontend Actions
-on:
-  push:
-    branches:    
-      - main
+name: Pull Request Frontend Actions
+on: [pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,22 +34,3 @@ jobs:
             ${{ runner.os }}-
       - run: cd frontend && npm install
       - run: cd frontend && npm run generate
-      - uses: vimtor/action-zip@v1
-        with:
-          files: frontend/dist/
-          dest: frontend/dist.zip
-      - uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: frontend/dist.zip
-  docker:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-        with:
-          name: dist
-      - run: mv dist.zip frontend/
-      - run: cd frontend && unzip dist.zip -d dist
-      - run: cd frontend && docker build -t frontend .
