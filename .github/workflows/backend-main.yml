@@ -53,4 +53,5 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: war
+      - run: find .
       - run: cd backend && docker build -t backend .
