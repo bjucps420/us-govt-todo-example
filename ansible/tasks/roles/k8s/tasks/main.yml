@@ -1,0 +1,215 @@
+---
+- name: Create a Deployment for Redis
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis
+        labels:
+          name: redis
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: redis
+        template:
+          metadata:
+            labels:
+              app: redis
+          spec:
+            containers:
+            - name: redis
+              image: redis:6.2.6
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 6379
+                name: redis
+
+- name: Create a Service for Redis
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis
+      spec:
+        selector:
+          app: redis
+        ports:
+          - port: 6379
+            targetPort: 6379
+
+- name: Create Env for Backend
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: backend
+      data:
+        BASE_URL: "https://{{ domain }}"
+        DB_HOST: "{{ db_host }}"
+        DB_NAME: "{{ db_name }}"
+        DB_PASS: "{{ db_pass }}"
+        DB_PORT: "{{ db_port }}"
+        DB_USER: "{{ db_user }}"
+        FUSION_AUTH_API_KEY: "{{ fusion_auth_api_key }}"
+        FUSION_AUTH_APPLICATION_ID: "{{ fusion_auth_client_id }}"
+        REDIS_HOST: "{{ redis_host }}"
+        REDIS_PORT: "{{ redis_port }}"
+
+- name: Create a Deployment for Backend
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: backend
+        labels:
+          app: backend
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: backend
+        template:
+          metadata:
+            labels:
+              app: backend
+          spec:
+            containers:
+            - name: backend
+              image: "{{ backend_image }}"
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: backend
+              ports:
+              - name: http
+                containerPort: "{{ backend_port }}"
+
+- name: Create a Service for Backend
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: backend
+      spec:
+        selector:
+          app: backend
+        ports:
+          - port: "{{ backend_port }}"
+            targetPort: "{{ backend_port }}"
+
+- name: Create Env for Frontend
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: frontend
+      data:
+        SERVER: "{{ backend_host }}"
+
+- name: Create a Deployment for Frontend
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: frontend
+      spec:
+        selector:
+          matchLabels:
+            app: frontend
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              app: frontend
+          spec:
+            containers:
+              - name: frontend
+                image: "{{ frontend_image }}"
+                imagePullPolicy: Always
+                envFrom:
+                - configMapRef:
+                    name: frontend
+                ports:
+                - name: http
+                  containerPort: "{{ frontend_port }}"
+
+- name: Create a Service for Frontend
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: frontend
+      spec:
+        selector:
+          app: frontend
+        ports:
+        - port: "{{ frontend_port }}"
+          targetPort: "{{ frontend_port }}"
+
+- name: Install Ingress Controller
+  shell: |
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm repo update
+    helm install nginx-ingress ingress-nginx/ingress-nginx --set controller.publishService.enabled=true
+    echo "waiting 5 minutes for public ip to be available, check DO for progress"
+    sleep 300
+
+- name: Install Ingress Controller
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: ingress
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      spec:
+        rules:
+        - host: "{{ domain }}"
+          http:
+            paths:
+            - pathType: Prefix
+              path: "/"
+              backend:
+                service:
+                  name: frontend
+                  port:
+                    number: 80
+        - host: "www.{{ domain }}"
+          http:
+            paths:
+            - pathType: Prefix
+              path: "/"
+              backend:
+                service:
+                  name: frontend
+                  port:
+                    number: 80

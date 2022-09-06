@@ -62,7 +62,3 @@ resource "digitalocean_database_connection_pool" "pool-01" {
   db_name    = "defaultdb"
   user       = "doadmin"
 }
-
-resource "digitalocean_domain" "default" {
-  name = "presidentialtodos.com"
-}

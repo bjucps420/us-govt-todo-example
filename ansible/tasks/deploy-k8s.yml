@@ -1,0 +1,5 @@
+---
+- hosts: cluster
+  connection: local
+  roles:
+    - k8s
