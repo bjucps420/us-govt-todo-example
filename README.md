@@ -26,4 +26,4 @@ The frontend for the project is placed in the `frontend/` folder.  The frontend 
 
 The Digital Ocean infrastructure setup is contained in the `terraform/` folder.  The templates here create a VPC, firewall, load balancer, kubernetes cluster and database on Digital Ocean for hosting the project. Note that a domain is required to run the template.
 
-The ansible scripts for populating the Kubernetes cluster with information are contained in the `ansible/` folder. The kubernetes cluster contains an instance of prometheus, the prometheus alerter, the frontend, the backend and Fusion Auth.
+The ansible scripts for populating the Kubernetes cluster with information are contained in the `ansible/` folder. The kubernetes cluster contains an instance of redis, the frontend, and the backend.
