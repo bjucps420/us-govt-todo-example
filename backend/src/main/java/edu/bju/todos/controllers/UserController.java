@@ -66,7 +66,9 @@ public class UserController {
     public ApiResponse<Boolean> changePassword(@RequestBody PasswordChangeDto passwordChangeDto) {
         if(fusionAuthService.checkPassword(security.getUser().getEmail(), passwordChangeDto.getCurrentPassword()).getFirst() < 300) {
             fusionAuthService.updatePassword(security.getUser().getFusionAuthUserId(), passwordChangeDto.getNewPassword(), false);
+            return ApiResponse.success(true);
+        } else {
+            return ApiResponse.error("Current password is incorrect.");
         }
-        return ApiResponse.success(true);
     }
 }
