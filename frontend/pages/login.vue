@@ -111,46 +111,6 @@
             </v-form>
           </div>
 
-          <div v-if="page == FORGOT_PASSWORD">
-            <v-form ref="forgotPasswordForm">
-              <v-row>
-                <v-col cols="12">
-                  Please enter your email in order to receive an email with a link to reset your password.
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="email"
-                    :rules="emailRules"
-                    label="Email"
-                    required
-                    prepend-icon="mdi-at"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-btn
-                  color="secondary"
-                  class="my-4 rounded-pill"
-                  depressed
-                  @click="back"
-                >
-                  Back
-                </v-btn>
-                <v-spacer/>
-                <v-btn
-                  color="primary"
-                  class="my-4 rounded-pill"
-                  depressed
-                  @click="sendForgotPasswordEmail"
-                >
-                  Send Email
-                </v-btn>
-              </v-row>
-            </v-form>
-          </div>
-
           <div v-if="page == FORGOT_PASSWORD_COMPLETE || page == PASSWORD_CHANGE">
             <v-form ref="completeChangePasswordForm">
               <v-row>
