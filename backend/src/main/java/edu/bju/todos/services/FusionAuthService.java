@@ -140,7 +140,7 @@ public class FusionAuthService {
         var user = getUserByLogin(username);
         if(user != null) {
             var forgotPassword = new ForgotPasswordRequest();
-            forgotPassword.sendForgotPasswordEmail = false;
+            forgotPassword.sendForgotPasswordEmail = true;
             forgotPassword.applicationId = UUID.fromString(clientId);
             forgotPassword.loginId = username;
             var response = fusionAuthClient.forgotPassword(forgotPassword);
