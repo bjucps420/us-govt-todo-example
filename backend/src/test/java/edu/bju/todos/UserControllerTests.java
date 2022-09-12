@@ -284,6 +284,6 @@ public class UserControllerTests {
                 .andReturn();
 
         var json = om.readTree(response.getResponse().getContentAsString());
-        assertTrue(json.get("success").asBoolean());
+        assertTrue(!json.get("success").asBoolean());
     }
 }
