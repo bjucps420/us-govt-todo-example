@@ -34,10 +34,16 @@
 		<h2database.version>2.1.212</h2database.version>
 		<powermock.version>2.0.9</powermock.version>
 		<sentry.version>6.3.1</sentry.version>
+		<springdoc.version>1.6.11</springdoc.version>
 		<sonar.organization>bjucps</sonar.organization>
 	  	<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
