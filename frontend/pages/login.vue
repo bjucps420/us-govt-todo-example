@@ -6,7 +6,7 @@
         :class="$vuetify.breakpoint.lgAndUp ? 'rounded-lg' : null"
         :tile="$vuetify.breakpoint.mdAndDown"
         :style="{width: $vuetify.breakpoint.mdAndDown ? '100vw' : '50vw'}"
-        :color="$vuetify.breakpoint.smAndUp ? 'grey lighten-4' : ''"
+        :color="!$vuetify.theme.dark ? 'grey lighten-4' : ''"
       >
         <v-card-text class="pa-9 pa-sm-15">
           <div v-if="page == LOGIN">
