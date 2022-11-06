@@ -410,9 +410,6 @@ export default {
             password: this.password,
           }});
           this.$store.commit('user/setUser', { user: this.$auth.user });
-          this.$nextTick(() => {
-            this.$router.push({path: "/"});
-          });
         } else {
           this.errorMessage = user.errorMessage;
           this.errorDialog = true;
@@ -457,9 +454,6 @@ export default {
               forgotPasswordCode: this.passwordChangeCode
             }});
             this.$store.commit('user/setUser', { user: this.$auth.user });
-            this.$nextTick(() => {
-              this.$router.push({path: "/"});
-            });
           }
         } else {
           this.showLoginFailedDialog = true;
